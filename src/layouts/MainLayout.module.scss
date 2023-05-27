@@ -1,0 +1,23 @@
+.header {
+  padding: 0 24px;
+
+  .left {
+    float: left;
+    height: 64px;
+  }
+
+  .right {
+    float: right;
+  }
+}
+
+.main {
+  min-height: calc(100vh - 64px - 71px);// 计算
+  background-color: #f7f7f7;
+}
+
+.footer {
+  text-align: center;
+  background-color: #f7f7f7;
+  border-top: 1px solid #e8e8e8;
+}
