@@ -21,7 +21,7 @@ const MainLayout: FC = () => {
       <Content className={styles.main}>
         <Outlet></Outlet>
       </Content>
-      <Footer className={styles.footer}>MainLayout footer</Footer>
+      <Footer className={styles.footer}>footer</Footer>
     </>
   )
 }
