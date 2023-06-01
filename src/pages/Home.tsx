@@ -4,7 +4,7 @@ import { Button, Typography } from 'antd'
 import { MANAGE_INDEX_PATHNAME } from '../router'
 import styles from './Home.module.scss'
 
-import '../_mock/index'
+import axios from 'axios'
 
 const { Title, Paragraph } = Typography
 
@@ -12,9 +12,7 @@ const Home: FC = () => {
   const nav = useNavigate()
 
   useEffect(() => {
-    fetch('/api/test')
-      .then(res => res.json())
-      .then(data => console.log('fetch data', data))
+    axios.get('/api/test').then(res => console.log('axios', res))
   }, [])
 
   // function clickHandler() {
