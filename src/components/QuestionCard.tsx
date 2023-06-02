@@ -15,7 +15,7 @@ type PropsType = {
   _id: string
   title: string
   isPublished: boolean
-  isStart: boolean
+  isStar: boolean
   answerCount: number
   createAt: string
 }
@@ -24,7 +24,7 @@ const { confirm } = Modal
 
 const QuestionCard: FC<PropsType> = (props: PropsType) => {
   const nav = useNavigate()
-  const { _id, title, isPublished, isStart, answerCount, createAt } = props
+  const { _id, title, isPublished, isStar, answerCount, createAt } = props
 
   function duplicate() {
     message.success('执行复制')
@@ -46,7 +46,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
         <div className={styles.left}>
           <Link to={isPublished ? `/question/stat/${_id}` : `/question/edit/${_id}`}>
             <Space>
-              {isStart && <StarOutlined style={{ color: 'red' }} />}
+              {isStar && <StarOutlined style={{ color: 'red' }} />}
               {title}
             </Space>
           </Link>
@@ -85,7 +85,7 @@ const QuestionCard: FC<PropsType> = (props: PropsType) => {
         <div className={styles.right}>
           <Space>
             <Button icon={<StarOutlined />} type="text" size="small">
-              {isStart ? '取消标星' : '标星'}
+              {isStar ? '取消标星' : '标星'}
             </Button>
             <Popconfirm
               title="确认复制该问卷"
