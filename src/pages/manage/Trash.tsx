@@ -1,4 +1,4 @@
-import { useTitle } from 'ahooks'
+import { useRequest, useTitle } from 'ahooks'
 import React, { FC, useState } from 'react'
 import styles from './common.module.scss'
 import { Empty, Table, Typography, Tag, Space, Button, message, Modal, Spin } from 'antd'
@@ -6,23 +6,52 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import ListSearch from '../../components/ListSearch'
 import useLoadQuestionListData from '../../hooks/useLoadQuestionListData'
 import ListPage from '../../components/ListPage'
+import { deleteQuestionService, updateQuestionService } from '../../service/question'
 
 const { Title } = Typography
 const { confirm } = Modal
 
 const Trash: FC = () => {
   useTitle('回收站')
-  const { loading, error, data = {} } = useLoadQuestionListData({ isDeleted: true })
+  const { loading, error, data = {}, refresh } = useLoadQuestionListData({ isDeleted: true })
   const { list = [], total = 0 } = data
 
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+
+  // 恢复
+  const { run: recover } = useRequest(
+    async () => {
+      for await (const id of selectedIds) {
+        await updateQuestionService(id, { isDelete: false })
+      }
+    },
+    {
+      manual: true,
+      debounceWait: 500, // 防抖
+      onSuccess(result) {
+        message.success('恢复成功')
+        refresh()
+        setSelectedIds([])
+      },
+    }
+  )
+
+  // 彻底删除
+  const { run: deleteQuestion } = useRequest(async () => await deleteQuestionService(selectedIds), {
+    manual: true,
+    onSuccess() {
+      message.success('彻底删除')
+      refresh()
+      setSelectedIds([])
+    },
+  })
 
   function del() {
     confirm({
       title: '确认彻底删除所选问卷',
       content: '删除以后不可找回',
       icon: <ExclamationCircleOutlined />,
-      onOk: () => message.success(`删除${selectedIds}`),
+      onOk: deleteQuestion,
       okText: '确认',
       cancelText: '取消',
     })
@@ -60,7 +89,7 @@ const Trash: FC = () => {
     <>
       <div style={{ marginBottom: '16px' }}>
         <Space>
-          <Button type="primary" disabled={selectedIds.length === 0}>
+          <Button type="primary" disabled={selectedIds.length === 0} onClick={recover}>
             恢复
           </Button>
           <Button danger disabled={selectedIds.length === 0} onClick={del}>

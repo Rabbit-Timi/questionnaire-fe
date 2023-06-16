@@ -1,15 +1,34 @@
 import { UserAddOutlined } from '@ant-design/icons'
-import { Button, Form, Input, Space, Typography } from 'antd'
+import { Button, Form, Input, Space, Typography, message } from 'antd'
 import React, { FC } from 'react'
 import styles from './Register.module.scss'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { LOGIN_PATHNAME } from '../router'
+import { useRequest, useTitle } from 'ahooks'
+import { registerService } from '../service/user'
 
 const { Title } = Typography
 
 const Register: FC = () => {
+  useTitle('注册')
+  const nav = useNavigate()
+
+  const { run } = useRequest(
+    async values => {
+      const { username, password, nickname } = values
+      await registerService(username, password, nickname)
+    },
+    {
+      manual: true,
+      onSuccess() {
+        message.success('注册成功')
+        nav(LOGIN_PATHNAME)
+      },
+    }
+  )
+
   const onFinish = (values: unknown) => {
-    console.log('Success:', values)
+    run(values)
   }
 
   return (
@@ -36,11 +55,7 @@ const Register: FC = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="昵称"
-            name="nickname"
-            rules={[{ required: true, message: '请输入昵称' }]}
-          >
+          <Form.Item label="昵称" name="nickname">
             <Input />
           </Form.Item>
 

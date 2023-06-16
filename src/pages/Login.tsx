@@ -1,9 +1,12 @@
 import { UserAddOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Form, Input, Space, Typography } from 'antd'
+import { Button, Checkbox, Form, Input, Space, Typography, message } from 'antd'
 import React, { FC, useEffect } from 'react'
 import styles from './Login.module.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import { REGISTER_PATHNAME } from '../router'
+import { MANAGE_INDEX_PATHNAME, REGISTER_PATHNAME } from '../router'
+import { useRequest, useTitle } from 'ahooks'
+import { loginService } from '../service/user'
+import { setToken } from '../utils/user-token'
 
 const { Title } = Typography
 
@@ -28,9 +31,23 @@ function getUserFromStorage() {
 }
 
 const Login: FC = () => {
+  useTitle('登陆')
   const nav = useNavigate()
 
   const [form] = Form.useForm()
+
+  const { run } = useRequest(
+    async (username: string, password: string) => await loginService(username, password),
+    {
+      manual: true,
+      onSuccess(result) {
+        const { token = '' } = result
+        setToken(token)
+        message.success('登陆成功')
+        nav(MANAGE_INDEX_PATHNAME)
+      },
+    }
+  )
 
   useEffect(() => {
     const { username, password } = getUserFromStorage()
@@ -39,6 +56,7 @@ const Login: FC = () => {
 
   const onFinish = (values: any) => {
     const { username, password, remember } = values || {}
+    run(username, password)
     if (remember) {
       rememberUser(username, password)
     } else {
