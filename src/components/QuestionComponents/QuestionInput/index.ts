@@ -1,0 +1,16 @@
+/*
+ * @Description: 输入框
+ * @Author: timmtiy
+ */
+
+import Component from './Component'
+import { QuestionInputDefaultProps } from './interface'
+
+export * from './interface'
+
+export default {
+  title: '输入框',
+  type: 'questionInput',
+  Component,
+  defaultProps: QuestionInputDefaultProps,
+}

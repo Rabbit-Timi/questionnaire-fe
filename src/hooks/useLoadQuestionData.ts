@@ -1,31 +1,36 @@
 import { useParams } from 'react-router-dom'
 import { useRequest } from 'ahooks'
 import { getQuestionService } from '../service/question'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { resetComponents } from '../store/componentsReducer'
 
 function useLoadQuestionData() {
+  const dispatch = useDispatch()
   const { id = '' } = useParams()
 
-  // const [loading, setLoading] = useState(true)
-  // const [questionData, setQuestionData] = useState({})
+  const { loading, error, data, run } = useRequest(
+    async (id: string) => {
+      if (!id) throw new Error('没有问卷')
+      const data = await getQuestionService(id)
+      return data
+    },
+    { manual: true }
+  )
 
-  // useEffect(() => {
-  //   async function fn() {
-  //     const data = await getQuestionService(id)
-  //     setQuestionData(data)
-  //     setLoading(false)
-  //     console.log(data)
-  //   }
-  //   fn()
-  // }, [])
+  //根据 data 设置 redux store
+  useEffect(() => {
+    if (!data) return
+    const { title = '', componentList = [] } = data
+    dispatch(resetComponents({ componentList }))
+  }, [data])
 
-  async function load() {
-    const data = await getQuestionService(id)
-    return data
-  }
+  // 根据 id 变化加载问卷
+  useEffect(() => {
+    run(id)
+  }, [id])
 
-  const { loading, error, data } = useRequest(load)
-
-  return { loading, error, data }
+  return { loading, error }
 }
 
 export default useLoadQuestionData

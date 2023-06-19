@@ -5,12 +5,12 @@ import { useParams } from 'react-router-dom'
 const Stat: FC = () => {
   const { id = '' } = useParams()
 
-  const { loading, data } = useLoadQuestionData()
+  const { loading } = useLoadQuestionData()
 
   return (
     <div>
       <p>Stat {id}</p>
-      {loading ? <p>loading</p> : <p>{JSON.stringify(data)}</p>}
+      {/* {loading ? <p>loading</p> : <p>{JSON.stringify(data)}</p>} */}
     </div>
   )
 }
