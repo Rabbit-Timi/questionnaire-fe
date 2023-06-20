@@ -21,8 +21,9 @@ function useLoadQuestionData() {
   //根据 data 设置 redux store
   useEffect(() => {
     if (!data) return
-    const { title = '', componentList = [] } = data
-    dispatch(resetComponents({ componentList }))
+    const { componentList = [] } = data
+    const selectedId = ''
+    dispatch(resetComponents({ selectedId, componentList }))
   }, [data])
 
   // 根据 id 变化加载问卷

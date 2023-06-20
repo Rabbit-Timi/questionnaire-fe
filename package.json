@@ -15,8 +15,7 @@
     "ahooks": "^3.7.7",
     "antd": "^5.5.1",
     "axios": "^1.4.0",
-    "craco": "^0.0.3",
-    "immer": "^10.0.2",
+    "mockjs": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.0",
@@ -31,8 +30,8 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "lint": "eslint 'src/**/*.+(js|ts|jsx|tsx)'",
-    "format": "prettier --write 'src/**/*.+(js|ts|jsx|tsx)'",
+    "lint": " eslint 'src/**/*.+(js|ts|jsx|tsx)' ",
+    "format": " prettier --write 'src/**/*.+(js|ts|jsx|tsx)' ",
     "prepare": "husky install"
   },
   "eslintConfig": {
@@ -56,6 +55,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",
     "@commitlint/config-conventional": "^17.6.3",
+    "@craco/craco": "^7.0.0",
     "@types/mockjs": "^1.0.7",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
