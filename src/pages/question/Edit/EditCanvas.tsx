@@ -25,7 +25,7 @@ const EditCanvas: FC<PropsType> = ({ loading }) => {
   const { selectedId, componentList } = useGetComponentInfo()
 
   function handleClick(event: MouseEvent, id: string) {
-    // 阻止冒泡
+    // 阻止冒泡 防止冒泡到 main 直接清空selectId
     event.stopPropagation()
     dispatch(changeSelectedId(id))
   }
