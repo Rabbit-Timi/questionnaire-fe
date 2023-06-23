@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { message } from 'antd'
 import { getToken } from '../utils/user-token'
-import { error } from 'console'
 
 const instance = axios.create({
   timeout: 10 * 1000,
