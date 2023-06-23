@@ -23,7 +23,7 @@ const QuestionTitle: FC<QuestionTitlePropsType> = (props: QuestionTitlePropsType
         fontSize: genFontSize(level),
       }}
     >
-      {level}级{text}
+      {text}
     </Title>
   )
 }

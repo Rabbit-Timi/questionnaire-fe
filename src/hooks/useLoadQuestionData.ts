@@ -28,7 +28,7 @@ function useLoadQuestionData() {
       selectedId = componentList[0].fe_id
     }
 
-    dispatch(resetComponents({ selectedId, componentList }))
+    dispatch(resetComponents({ selectedId, componentList, copiedComponent: null }))
   }, [data])
 
   // 根据 id 变化加载问卷

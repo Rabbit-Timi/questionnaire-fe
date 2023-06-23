@@ -1,7 +1,8 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice, nanoid } from '@reduxjs/toolkit'
 import { produce } from 'immer'
 import { ComponentPropsType } from '../../components/QuestionComponents'
-import { getNextSelected } from './utils'
+import { getNextSelected, insertNewComponent } from './utils'
+import cloneDeep from 'lodash.clonedeep'
 
 export type ComponentInfoType = {
   fe_id: string
@@ -15,11 +16,13 @@ export type ComponentInfoType = {
 export type ComponentsStateType = {
   selectedId: string
   componentList: Array<ComponentInfoType>
+  copiedComponent: ComponentInfoType | undefined | null
 }
 
 const INIT_STATE: ComponentsStateType = {
   selectedId: '',
   componentList: [],
+  copiedComponent: undefined,
 }
 
 export const componentsSlice = createSlice({
@@ -39,15 +42,7 @@ export const componentsSlice = createSlice({
       (draft: ComponentsStateType, action: PayloadAction<ComponentInfoType>) => {
         const newComponent = action.payload
 
-        const { selectedId, componentList } = draft
-        const index = componentList.findIndex(c => c.fe_id === selectedId)
-
-        // 未选中任何组件
-        if (index < 0) {
-          draft.componentList.push(newComponent)
-        } else {
-          draft.componentList.splice(index + 1, 0, newComponent)
-        }
+        insertNewComponent(draft, newComponent)
       }
     ),
     // 修改组件属性
@@ -71,7 +66,7 @@ export const componentsSlice = createSlice({
     removeSelectedComponent: produce((draft: ComponentsStateType) => {
       const { selectedId: removedId, componentList = [] } = draft
 
-      // 重新计算 selectedID
+      // 重新计算 selectedId
       const newSelectedId = getNextSelected(removedId, componentList)
 
       const index = componentList.findIndex(c => c.fe_id === removedId)
@@ -87,7 +82,7 @@ export const componentsSlice = createSlice({
         const { componentList } = draft
         const { fe_id, isHidden } = action.payload
 
-        // 重新计算 selectedID
+        // 重新计算 selectedId
         let newSelectedId = ''
         if (isHidden) {
           newSelectedId = getNextSelected(fe_id, componentList)
@@ -113,6 +108,21 @@ export const componentsSlice = createSlice({
         curComp.isLocked = !curComp.isLocked
       }
     }),
+    // 复制选中组件
+    copySelectedComponent: produce((draft: ComponentsStateType) => {
+      const { selectedId, componentList } = draft
+      const curComp = componentList.find(c => c.fe_id === selectedId)
+      if (curComp === null) return
+      draft.copiedComponent = cloneDeep(curComp)
+    }),
+    // 粘贴组件
+    pasteComponent: produce((draft: ComponentsStateType) => {
+      const { copiedComponent } = draft
+      if (copiedComponent) {
+        copiedComponent.fe_id = nanoid()
+        insertNewComponent(draft, copiedComponent)
+      }
+    }),
   },
 })
 
@@ -124,5 +134,7 @@ export const {
   removeSelectedComponent,
   changeComponentHidden,
   toggleComponentLocked,
+  copySelectedComponent,
+  pasteComponent,
 } = componentsSlice.actions
 export default componentsSlice.reducer

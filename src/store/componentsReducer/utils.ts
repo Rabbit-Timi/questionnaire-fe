@@ -1,4 +1,4 @@
-import { ComponentInfoType } from './index'
+import { ComponentInfoType, ComponentsStateType } from './index'
 
 /**
  * @Author: timmtiy
@@ -28,4 +28,24 @@ export function getNextSelected(fe_id: string, componentList: Array<ComponentInf
   }
 
   return newSelectedId
+}
+
+/**
+ * @Author: timmtiy
+ * @description: 插入新组件
+ * @param {ComponentsStateType} draft
+ * @param {ComponentInfoType} newComponent
+ * @return {*}
+ */
+export function insertNewComponent(draft: ComponentsStateType, newComponent: ComponentInfoType) {
+  const { selectedId, componentList } = draft
+  const index = componentList.findIndex(c => c.fe_id === selectedId)
+
+  // 未选中任何组件
+  if (index < 0) {
+    draft.componentList.push(newComponent)
+  } else {
+    draft.componentList.splice(index + 1, 0, newComponent)
+  }
+  draft.selectedId = newComponent.fe_id
 }
