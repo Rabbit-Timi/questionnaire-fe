@@ -8,21 +8,22 @@ import { ComponentInfoType } from './index'
  * @return {*}
  */
 export function getNextSelected(fe_id: string, componentList: Array<ComponentInfoType>) {
-  const index = componentList.findIndex(c => c.fe_id === fe_id)
+  const visibleComponentList = componentList.filter(c => !c.isHidden)
+  const index = visibleComponentList.findIndex(c => c.fe_id === fe_id)
 
   // 未选中
   if (index < 0) return ''
 
   // 重新计算 selectedId
   let newSelectedId = ''
-  const length = componentList.length
+  const length = visibleComponentList.length
   if (length <= 1) {
     newSelectedId = ''
   } else {
     if (index + 1 == length) {
-      newSelectedId = componentList[index - 1].fe_id
+      newSelectedId = visibleComponentList[index - 1].fe_id
     } else {
-      newSelectedId = componentList[index + 1].fe_id
+      newSelectedId = visibleComponentList[index + 1].fe_id
     }
   }
 
