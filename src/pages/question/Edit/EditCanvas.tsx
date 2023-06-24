@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import { Spin } from 'antd'
 import { ComponentInfoType, changeSelectedId } from '../../../store/componentsReducer'
 import { useDispatch } from 'react-redux'
+import useBindCanvasKeyPress from '../../../hooks/useBindCanvasKeyPress'
 
 type PropsType = {
   loading: boolean
@@ -23,6 +24,9 @@ function genComponent(componentInfo: ComponentInfoType) {
 const EditCanvas: FC<PropsType> = ({ loading }) => {
   const dispatch = useDispatch()
   const { selectedId, componentList } = useGetComponentInfo()
+
+  // 绑定快捷键
+  useBindCanvasKeyPress()
 
   function handleClick(event: MouseEvent, id: string) {
     // 阻止冒泡 防止冒泡到 main 直接清空selectId
