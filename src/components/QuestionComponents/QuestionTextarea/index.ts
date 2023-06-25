@@ -1,18 +1,18 @@
 /*
- * @Description: 描述
+ * @Description: 输入框
  * @Author: timmtiy
  */
 
 import Component from './Component'
+import { QuestionTextareaDefaultProps } from './interface'
 import PropComponent from './PropComponent'
-import { QuestionInfoDefaultProps } from './interface'
 
 export * from './interface'
 
 export default {
-  title: '问卷信息',
-  type: 'questionInfo',
+  title: '输入框',
+  type: 'questionTextarea',
   Component,
   PropComponent,
-  defaultProps: QuestionInfoDefaultProps,
+  defaultProps: QuestionTextareaDefaultProps,
 }
