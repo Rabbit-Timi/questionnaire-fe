@@ -33,11 +33,7 @@ const PropComponent: FC<QuestionTitlePropsType> = (props: QuestionTitlePropsType
       onValuesChange={handleValueChange}
       disabled={disabled}
     >
-      <Form.Item
-        label="标题内容"
-        name="text"
-        rules={[{ required: true, message: '请输入标题内容' }]}
-      >
+      <Form.Item label="标题" name="text" rules={[{ required: true, message: '请输入标题内容' }]}>
         <Input />
       </Form.Item>
       <Form.Item label="层级" name="level">
