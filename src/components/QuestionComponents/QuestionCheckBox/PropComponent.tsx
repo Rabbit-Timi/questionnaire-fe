@@ -1,31 +1,32 @@
 import React, { FC, useEffect } from 'react'
-import { Button, Checkbox, Form, Input, Select, Space } from 'antd'
-import { OptionType, QuestionRadioPropsType } from './interface'
+import { Button, Checkbox, Form, Input, Space } from 'antd'
+import { OptionType, QuestionCheckBoxPropsType } from './interface'
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { nanoid } from '@reduxjs/toolkit'
 
-const PropComponent: FC<QuestionRadioPropsType> = (props: QuestionRadioPropsType) => {
-  const { title, isVertical, options = [], value, onChange, disabled } = props
+const PropComponent: FC<QuestionCheckBoxPropsType> = (props: QuestionCheckBoxPropsType) => {
+  const { title, isVertical, list = [], onChange, disabled } = props
   const [form] = Form.useForm()
 
   useEffect(() => {
     form.setFieldsValue({
       title,
       isVertical,
-      options,
-      value,
+      list,
     })
-  }, [title, isVertical, options, value])
+  }, [title, isVertical, list])
 
   function handleValueChange() {
     if (onChange) {
-      const newValues = form.getFieldsValue() as QuestionRadioPropsType
-      const { options = [] } = newValues
+      const newValues = form.getFieldsValue() as QuestionCheckBoxPropsType
+      const { list = [] } = newValues
 
-      options.forEach(opt => {
+      list.forEach(opt => {
         if (opt.value) return
-        opt.value = nanoid()
+        opt.value = nanoid(5)
       })
+
+      // console.log(newValues)
       onChange(newValues)
     }
   }
@@ -33,7 +34,7 @@ const PropComponent: FC<QuestionRadioPropsType> = (props: QuestionRadioPropsType
   return (
     <Form
       layout="vertical"
-      initialValues={{ title, isVertical, options, value }}
+      initialValues={{ title, isVertical, list }}
       form={form}
       onValuesChange={handleValueChange}
       disabled={disabled}
@@ -42,11 +43,14 @@ const PropComponent: FC<QuestionRadioPropsType> = (props: QuestionRadioPropsType
         <Input />
       </Form.Item>
       <Form.Item label="选项">
-        <Form.List name="options">
+        <Form.List name="list">
           {(fields, { add, remove }, { errors }) => (
             <>
               {fields.map(({ key, name }, index) => (
                 <Space key={key} align="baseline">
+                  <Form.Item name={[name, 'checked']} valuePropName="checked">
+                    <Checkbox />
+                  </Form.Item>
                   {/* 选项输入框 */}
                   <Form.Item
                     name={[name, 'text']}
@@ -54,10 +58,10 @@ const PropComponent: FC<QuestionRadioPropsType> = (props: QuestionRadioPropsType
                       { required: true, message: '请输入选项内容' },
                       {
                         validator: (_, text) => {
-                          const { options = [] } = form.getFieldsValue()
+                          const { list = [] } = form.getFieldsValue()
 
                           let num = 0
-                          options.forEach((option: OptionType) => {
+                          list.forEach((option: OptionType) => {
                             if (option.text === text) num++
                           })
                           if (num === 1) return Promise.resolve()
@@ -83,7 +87,7 @@ const PropComponent: FC<QuestionRadioPropsType> = (props: QuestionRadioPropsType
                 <Button
                   type="link"
                   onClick={() => {
-                    add({ text: '', value: '' })
+                    add({ text: '', value: '', checked: false })
                   }}
                   icon={<PlusOutlined />}
                 >
@@ -94,12 +98,6 @@ const PropComponent: FC<QuestionRadioPropsType> = (props: QuestionRadioPropsType
             </>
           )}
         </Form.List>
-      </Form.Item>
-      <Form.Item label="默认选中" name="value">
-        <Select
-          value={value}
-          options={options.map(({ text, value }) => ({ value, label: text || '' }))}
-        ></Select>
       </Form.Item>
       <Form.Item valuePropName="checked" name="isVertical">
         <Checkbox>垂直显示</Checkbox>

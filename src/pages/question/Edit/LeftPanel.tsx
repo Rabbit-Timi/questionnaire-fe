@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { Tabs } from 'antd'
 import { AppstoreOutlined, BarsOutlined } from '@ant-design/icons'
 import ComponentLib from './ComponentLib'
+import styles from './LeftPanel.module.scss'
 
 const LeftPanel: FC = () => {
   const tabItems = [
@@ -14,7 +15,7 @@ const LeftPanel: FC = () => {
         </span>
       ),
       children: (
-        <div>
+        <div className={styles['children-wrapper']}>
           <ComponentLib />
         </div>
       ),
@@ -27,7 +28,7 @@ const LeftPanel: FC = () => {
           图层
         </span>
       ),
-      children: <div>图层</div>,
+      children: <div className={styles['children-wrapper']}>图层</div>,
     },
   ]
 
