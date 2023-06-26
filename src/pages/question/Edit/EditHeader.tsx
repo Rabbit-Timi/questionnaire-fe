@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react'
+import React, { ChangeEvent, FC, useRef, useState } from 'react'
 import styles from './EditHeader.module.scss'
 import { Button, Input, Space, Typography } from 'antd'
 import { EditOutlined, LeftOutlined } from '@ant-design/icons'
@@ -6,12 +6,15 @@ import { useNavigate } from 'react-router-dom'
 import EditToolbar from './EditToolbar'
 import useGetPageInfo from '../../../hooks/useGetPageInfo'
 import type { InputRef } from 'antd'
+import { useDispatch } from 'react-redux'
+import { changePageTitle } from '../../../store/pageInfoReducer'
 
 const { Title } = Typography
 
 // 修改标题
 const TitleElem: FC = () => {
   const inputRef = useRef<InputRef>(null)
+  const dispatch = useDispatch()
   const pageInfo = useGetPageInfo()
   const { title } = pageInfo
 
@@ -31,11 +34,18 @@ const TitleElem: FC = () => {
       })
   }
 
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    const newTitle = event.target.value.trim()
+    if (!newTitle) return
+    dispatch(changePageTitle(newTitle))
+  }
+
   if (editState) {
     return (
       <Input
         ref={inputRef}
         value={title}
+        onChange={handleChange}
         onPressEnter={() => {
           setEditState(false)
         }}
