@@ -1,12 +1,60 @@
-import React, { FC } from 'react'
+import React, { FC, useRef, useState } from 'react'
 import styles from './EditHeader.module.scss'
-import { Button, Space, Typography } from 'antd'
-import { LeftOutlined } from '@ant-design/icons'
+import { Button, Input, Space, Typography } from 'antd'
+import { EditOutlined, LeftOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import EditToolbar from './EditToolbar'
+import useGetPageInfo from '../../../hooks/useGetPageInfo'
+import type { InputRef } from 'antd'
 
 const { Title } = Typography
 
+// 修改标题
+const TitleElem: FC = () => {
+  const inputRef = useRef<InputRef>(null)
+  const pageInfo = useGetPageInfo()
+  const { title } = pageInfo
+
+  const [editState, setEditState] = useState(false)
+
+  function handleClick() {
+    Promise.resolve()
+      .then(() => {
+        setEditState(true)
+      })
+      .then(() => {
+        if (inputRef.current) {
+          inputRef.current.focus({
+            cursor: 'end',
+          })
+        }
+      })
+  }
+
+  if (editState) {
+    return (
+      <Input
+        ref={inputRef}
+        value={title}
+        onPressEnter={() => {
+          setEditState(false)
+        }}
+        onBlur={() => {
+          setEditState(false)
+        }}
+      />
+    )
+  } else {
+    return (
+      <Space>
+        <Title>{title}</Title>
+        <Button icon={<EditOutlined />} type="text" onClick={handleClick} />
+      </Space>
+    )
+  }
+}
+
+// 编辑器头部布局
 const EditHeader: FC = () => {
   const nav = useNavigate()
 
@@ -18,7 +66,7 @@ const EditHeader: FC = () => {
             <Button type="link" icon={<LeftOutlined />} onClick={() => nav(-1)}>
               返回
             </Button>
-            <Title>问卷标题</Title>
+            <TitleElem />
           </Space>
         </div>
         <div className={styles.main}>

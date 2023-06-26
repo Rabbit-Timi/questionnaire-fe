@@ -1,7 +1,7 @@
-import React, { ChangeEvent, FC, useState } from 'react'
+import React, { ChangeEvent, FC, useRef, useState } from 'react'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
 import styles from './Layers.module.scss'
-import { Button, Input, Space, message } from 'antd'
+import { Button, Input, InputRef, Space, message } from 'antd'
 import { EyeInvisibleOutlined, EyeOutlined, LockOutlined, UnlockOutlined } from '@ant-design/icons'
 import classNames from 'classnames'
 import { useDispatch } from 'react-redux'
@@ -13,6 +13,7 @@ import {
 } from '../../../store/componentsReducer'
 
 const Layers: FC = () => {
+  const inputRef = useRef<InputRef>(null)
   const dispatch = useDispatch()
   const { componentList, selectedId } = useGetComponentInfo()
 
@@ -27,7 +28,18 @@ const Layers: FC = () => {
         dispatch(changeSelectedId(fe_id))
         setChangingTitleId('')
       } else if (fe_id === selectedId) {
-        setChangingTitleId(fe_id)
+        // setChangingTitleId(fe_id)
+        Promise.resolve()
+          .then(() => {
+            setChangingTitleId(fe_id)
+          })
+          .then(() => {
+            if (inputRef.current) {
+              inputRef.current.focus({
+                cursor: 'end',
+              })
+            }
+          })
       }
     }
   }
@@ -78,6 +90,7 @@ const Layers: FC = () => {
             >
               {fe_id === changingTitleId && (
                 <Input
+                  ref={inputRef}
                   allowClear
                   value={title}
                   onChange={changeTitle}
