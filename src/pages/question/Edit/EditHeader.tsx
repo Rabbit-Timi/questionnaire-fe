@@ -9,7 +9,7 @@ import type { InputRef } from 'antd'
 import { useDispatch } from 'react-redux'
 import { changePageTitle } from '../../../store/pageInfoReducer'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
-import { useKeyPress, useRequest } from 'ahooks'
+import { useDebounceEffect, useKeyPress, useRequest } from 'ahooks'
 import { updateQuestionService } from '../../../service/question'
 
 const { Title } = Typography
@@ -86,6 +86,15 @@ const SaveButton: FC = () => {
     event.preventDefault()
     if (!loading) save()
   })
+
+  // 自动保存
+  useDebounceEffect(
+    () => {
+      save()
+    },
+    [componentList, pageInfo],
+    { wait: 1000 }
+  )
 
   return (
     <Button onClick={save} disabled={loading} icon={loading ? <LoadingOutlined /> : ''}>
