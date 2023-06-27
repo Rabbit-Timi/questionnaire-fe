@@ -2,8 +2,10 @@ import {
   BlockOutlined,
   CopyOutlined,
   DeleteOutlined,
+  DownOutlined,
   EyeInvisibleOutlined,
   LockOutlined,
+  UpOutlined,
 } from '@ant-design/icons'
 import { Button, Space, Tooltip } from 'antd'
 import React, { FC } from 'react'
@@ -14,13 +16,23 @@ import {
   removeSelectedComponent,
   copySelectedComponent,
   pasteComponent,
+  moveComponent,
 } from '../../../store/componentsReducer'
 import useGetComponentInfo from '../../../hooks/useGetComponentInfo'
 
 const EditToolbar: FC = () => {
   const dispatch = useDispatch()
-  const { selectedId: fe_id, selectedComponent, copiedComponent } = useGetComponentInfo()
+  const {
+    selectedId: fe_id,
+    componentList,
+    selectedComponent,
+    copiedComponent,
+  } = useGetComponentInfo()
   const { isLocked } = selectedComponent || {}
+  const length = componentList.length
+  const selectedIndex = componentList.findIndex(c => c.fe_id === fe_id)
+  const isFirst = selectedIndex === 0
+  const isLast = selectedIndex + 1 === length
 
   // 删除
   function handleDelete() {
@@ -54,6 +66,22 @@ const EditToolbar: FC = () => {
     }
   }
 
+  // 上移组件
+  function moveUp() {
+    if (isFirst) return
+    const oldIndex = selectedIndex
+    const newIndex = selectedIndex - 1
+    dispatch(moveComponent({ oldIndex, newIndex }))
+  }
+
+  // 下移组件
+  function moveDown() {
+    if (isLast) return
+    const oldIndex = selectedIndex
+    const newIndex = selectedIndex + 1
+    dispatch(moveComponent({ oldIndex, newIndex }))
+  }
+
   return (
     <Space>
       <Tooltip title="删除">
@@ -79,6 +107,17 @@ const EditToolbar: FC = () => {
           shape="circle"
           icon={<BlockOutlined />}
           onClick={paste}
+        ></Button>
+      </Tooltip>
+      <Tooltip title="上移">
+        <Button disabled={isFirst} shape="circle" icon={<UpOutlined />} onClick={moveUp}></Button>
+      </Tooltip>
+      <Tooltip title="下移">
+        <Button
+          disabled={isLast}
+          shape="circle"
+          icon={<DownOutlined />}
+          onClick={moveDown}
         ></Button>
       </Tooltip>
     </Space>
