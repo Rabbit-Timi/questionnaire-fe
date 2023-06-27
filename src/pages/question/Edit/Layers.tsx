@@ -9,8 +9,11 @@ import {
   changeComponentHidden,
   changeComponentTitle,
   changeSelectedId,
+  moveComponent,
   toggleComponentLocked,
 } from '../../../store/componentsReducer'
+import SortableContainer from '../../../components/DragSortable/SortableContainer'
+import SortableItem from '../../../components/DragSortable/SortableItem'
 
 const Layers: FC = () => {
   const inputRef = useRef<InputRef>(null)
@@ -67,8 +70,17 @@ const Layers: FC = () => {
     )
   }
 
+  const itemsWithId = componentList.map(c => {
+    return { ...c, id: c.fe_id }
+  })
+
+  // 拖拽排序结束触发事件
+  function handleDragEnd(oldIndex: number, newIndex: number) {
+    dispatch(moveComponent({ oldIndex, newIndex }))
+  }
+
   return (
-    <>
+    <SortableContainer items={itemsWithId} onDragEnd={handleDragEnd}>
       {componentList.map(c => {
         const { fe_id, title, isHidden, isLocked } = c
 
@@ -81,53 +93,55 @@ const Layers: FC = () => {
         })
 
         return (
-          <div key={fe_id} className={styles.wrapper}>
-            <div
-              className={titleClassName}
-              onClick={() => {
-                handleTitleClick(fe_id)
-              }}
-            >
-              {fe_id === changingTitleId && (
-                <Input
-                  ref={inputRef}
-                  allowClear
-                  value={title}
-                  onChange={changeTitle}
-                  onPressEnter={() => setChangingTitleId('')}
-                  onBlur={() => setChangingTitleId('')}
-                />
-              )}
-              {fe_id !== changingTitleId && title}
+          <SortableItem key={fe_id} id={fe_id}>
+            <div className={styles.wrapper}>
+              <div
+                className={titleClassName}
+                onClick={() => {
+                  handleTitleClick(fe_id)
+                }}
+              >
+                {fe_id === changingTitleId && (
+                  <Input
+                    ref={inputRef}
+                    allowClear
+                    value={title}
+                    onChange={changeTitle}
+                    onPressEnter={() => setChangingTitleId('')}
+                    onBlur={() => setChangingTitleId('')}
+                  />
+                )}
+                {fe_id !== changingTitleId && title}
+              </div>
+              <div className={styles.handler}>
+                <Space>
+                  <Button
+                    className={styles.btn}
+                    icon={isHidden ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                    type={isHidden ? 'primary' : 'text'}
+                    shape="circle"
+                    size="small"
+                    onClick={() => {
+                      handleHidden(fe_id, isHidden)
+                    }}
+                  />
+                  <Button
+                    className={styles.btn}
+                    icon={isLocked ? <LockOutlined /> : <UnlockOutlined />}
+                    type={isLocked ? 'primary' : 'text'}
+                    shape="circle"
+                    size="small"
+                    onClick={() => {
+                      handleLocked(fe_id)
+                    }}
+                  />
+                </Space>
+              </div>
             </div>
-            <div className={styles.handler}>
-              <Space>
-                <Button
-                  className={styles.btn}
-                  icon={isHidden ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-                  type={isHidden ? 'primary' : 'text'}
-                  shape="circle"
-                  size="small"
-                  onClick={() => {
-                    handleHidden(fe_id, isHidden)
-                  }}
-                />
-                <Button
-                  className={styles.btn}
-                  icon={isLocked ? <LockOutlined /> : <UnlockOutlined />}
-                  type={isLocked ? 'primary' : 'text'}
-                  shape="circle"
-                  size="small"
-                  onClick={() => {
-                    handleLocked(fe_id)
-                  }}
-                />
-              </Space>
-            </div>
-          </div>
+          </SortableItem>
         )
       })}
-    </>
+    </SortableContainer>
   )
 }
 
