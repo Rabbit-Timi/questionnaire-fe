@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FC, useRef, useState } from 'react'
 import styles from './EditHeader.module.scss'
-import { Button, Input, Space, Typography } from 'antd'
+import { Button, Input, Space, Typography, message } from 'antd'
 import { EditOutlined, LeftOutlined, LoadingOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 import EditToolbar from './EditToolbar'
@@ -105,14 +105,23 @@ const SaveButton: FC = () => {
 
 // 发布按钮组件
 const PublishButton: FC = () => {
+  const nav = useNavigate()
   const { id } = useParams()
+  const { componentList } = useGetComponentInfo()
+  const pageInfo = useGetPageInfo()
 
   const { loading, run: publish } = useRequest(
     async () => {
       if (!id) return
-      await updateQuestionService(id, { isPublished: true })
+      await updateQuestionService(id, { ...pageInfo, componentList, isPublished: true })
     },
-    { manual: true }
+    {
+      manual: true,
+      onSuccess() {
+        message.success('发布成功')
+        nav('/question/stat/' + id)
+      },
+    }
   )
 
   return (
