@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import useLoadQuestionData from '../../../hooks/useLoadQuestionData'
 import { Button, Result, Spin } from 'antd'
 import useGetPageInfo from '../../../hooks/useGetPageInfo'
@@ -6,11 +6,16 @@ import { useNavigate } from 'react-router-dom'
 import { useTitle } from 'ahooks'
 import styles from './index.module.scss'
 import StatHeader from './StatHeader'
+import ComponentList from './ComponentList'
 
 const Stat: FC = () => {
   const nav = useNavigate()
   const { loading } = useLoadQuestionData()
   const { title, isPublished } = useGetPageInfo()
+
+  // selected type
+  const [selectedComponentId, setSelectedComponentId] = useState('')
+  const [selectedComponentType, setSelectedComponentType] = useState('')
 
   // 修改标题
   useTitle(`问卷统计 - ${title}`)
@@ -44,7 +49,15 @@ const Stat: FC = () => {
     } else {
       return (
         <>
-          <div className={styles.left}>left</div>
+          <div className={styles.left}>
+            <div className={styles['canvas-wrapper']}>
+              <ComponentList
+                selectedComponentId={selectedComponentId}
+                setSelectedComponentId={setSelectedComponentId}
+                setSelectedComponentType={setSelectedComponentType}
+              />
+            </div>
+          </div>
           <div className={styles.main}>main</div>
           <div className={styles.right}>right</div>
         </>
