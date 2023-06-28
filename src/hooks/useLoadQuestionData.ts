@@ -22,7 +22,18 @@ function useLoadQuestionData() {
   //根据 data 设置 redux store
   useEffect(() => {
     if (!data) return
-    const { title = '', desc = '', js = '', css = '', componentList = [] } = data
+    const {
+      title = '',
+      desc = '',
+      js = '',
+      css = '',
+      componentList = [],
+      isPublished = false,
+      isStar = false,
+      isDelete = false,
+      answerCount = 0,
+      createAt = '',
+    } = data
     let selectedId = ''
 
     if (componentList.length > 0) {
@@ -33,7 +44,9 @@ function useLoadQuestionData() {
     dispatch(resetComponents({ selectedId, componentList, copiedComponent: null }))
 
     // 把 pageInfo 存储到 Redux store 中
-    dispatch(resetPageInfo({ title, desc, js, css }))
+    dispatch(
+      resetPageInfo({ title, desc, js, css, isPublished, isDelete, isStar, answerCount, createAt })
+    )
   }, [data])
 
   // 根据 id 变化加载问卷

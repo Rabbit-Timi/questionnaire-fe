@@ -8,12 +8,15 @@ import { changeSelectedId } from '../../../store/componentsReducer'
 import LeftPanel from './LeftPanel'
 import RightPanel from './RightPanel'
 import EditHeader from './EditHeader'
+import { useTitle } from 'ahooks'
 
 const Edit: FC = () => {
   const dispatch = useDispatch()
   const { id = '' } = useParams()
 
   const { loading } = useLoadQuestionData()
+
+  useTitle(`问卷编辑 `)
 
   function clearSelectedId() {
     dispatch(changeSelectedId(''))
