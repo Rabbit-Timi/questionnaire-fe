@@ -12,6 +12,7 @@ import {
   selectPrevComponent,
   selectNextComponent,
 } from '../store/componentsReducer'
+import { ActionCreators } from 'redux-undo'
 
 function isActiveElementValid() {
   const activeElem = document.activeElement
@@ -58,6 +59,31 @@ function useBindCanvasKeyPress() {
     if (!isActiveElementValid()) return
     dispatch(selectNextComponent())
   })
+
+  // 撤销
+  useKeyPress(
+    ['ctrl.z', 'meta.z'],
+    () => {
+      if (!isActiveElementValid()) return
+      dispatch(ActionCreators.undo())
+    },
+    {
+      // 严格匹配
+      exactMatch: true,
+    }
+  )
+  // 重做
+  useKeyPress(
+    ['ctrl.shift.z', 'meta.shift.z'],
+    () => {
+      if (!isActiveElementValid()) return
+      dispatch(ActionCreators.redo())
+    },
+    {
+      // 严格匹配
+      exactMatch: true,
+    }
+  )
 }
 
 export default useBindCanvasKeyPress
