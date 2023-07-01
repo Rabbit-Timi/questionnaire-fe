@@ -17,7 +17,7 @@
   .left {
     width: 350px;
     margin-right: 24px;
-    overflow: hidden;
+    // overflow: hidden;
 
 
     .canvas-wrapper {
@@ -32,6 +32,7 @@
     flex: auto;
     background-color: #fff;
     padding: 12px 18px;
+    overflow: auto;
   }
 
   .right {
@@ -39,6 +40,6 @@
     margin-left: 24px;
     background-color: #fff;
     padding: 12px 18px;
-    overflow: hidden;
+    // overflow: hidden;
   }
 }
