@@ -29,3 +29,7 @@ export const QuestionCheckBoxDefaultProps: QuestionCheckBoxPropsType = {
     },
   ],
 }
+
+export type QuestionCheckBoxStatPropsType = {
+  stat: Array<{ name: string; count: number }>
+}
